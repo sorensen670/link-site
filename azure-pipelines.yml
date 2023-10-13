@@ -1,0 +1,87 @@
+trigger:
+- master
+
+resources:
+  repositories:
+  - repository: TerraformCode
+    type: github
+    name: Maxyboy50/website
+    endpoint: Maxyboy50
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  - stage: 'TerraformPlan'
+    jobs:
+      - job: 'Plan'
+        
+        steps:
+          - bash: |
+              terraform init
+            workingDirectory: 'iac'
+            env:
+              AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY)
+              AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
+            displayName: Terraform Init
+          - bash: |
+              terraform validate
+            displayName: Ensure Terraform Code is valid before producing plan
+          - bash: |
+              terraform plan -out=plan.json
+            workingDirectory: 'iac'
+            env:
+              AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY)
+              AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
+            displayName: Terraform Plan
+          - task: publishPipelineArtifact@0
+            inputs:
+              artifactName: plan
+              targetPath: 'iac/plan.json'
+            displayName: Publish terraform plan artifact
+      - job: 'WebsiteContent'
+        steps:
+          - task: PublishPipelineArtifact@0
+            inputs:
+              artifactName: 'files'
+              targetPath: 'files/'
+            displayName: Publish website files artifact
+  - stage: TerraformApply
+    jobs:
+      - deployment: Apply
+        environment: Test
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: plan
+                - checkout: self
+                  
+                - bash: |
+                    terraform init 
+                  workingDirectory: '$(System.DefaultWorkingDirectory)/iac'
+                  env:
+                    AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY)
+                    AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
+                  displayName: Terraform Init
+
+                - bash: |
+                    terraform apply $(Pipeline.Workspace)/plan/plan.json
+                  workingDirectory: '$(System.DefaultWorkingDirectory)/iac'
+                  env:
+                    AWS_ACCESS_KEY_ID: $(AWS_ACCESS_KEY)
+                    AWS_SECRET_ACCESS_KEY: $(AWS_SECRET_KEY)
+                  displayName: Terraform Apply
+      - job: S3
+        steps:
+          - download: current
+            artifact: files
+          - task: S3Upload@1
+            inputs:
+              awsCredentials: 'AWS Tasks'
+              regionName: 'us-east-1'
+              bucketName: 'website-bucket-max-weitz'
+              sourceFolder: 'files/'
+              globExpressions: '**'
+            displayName: Upload website files to S3
+        dependsOn: Apply
