@@ -80,7 +80,7 @@ stages:
             inputs:
               awsCredentials: 'AWS Tasks'
               regionName: 'us-east-1'
-              bucketName: 'website-bucket-max-weitz'
+              bucketName: 'website-bucket-mike-sorensen'
               sourceFolder: 'files/'
               globExpressions: '**'
             displayName: Upload website files to S3
