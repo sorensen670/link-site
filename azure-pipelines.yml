@@ -5,8 +5,8 @@ resources:
   repositories:
   - repository: TerraformCode
     type: github
-    name: Maxyboy50/website
-    endpoint: Maxyboy50
+    name: sorensen670/link-site
+    endpoint: sorensen670
 pool:
   vmImage: ubuntu-latest
 
