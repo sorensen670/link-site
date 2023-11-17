@@ -1,11 +1,11 @@
 data "aws_route53_zone" "this" {
-  name         = "max-weitz.com."
+  name         = "michaeljsorensen.com."
   private_zone = false
 }
 
 resource "aws_route53_record" "this" {
   zone_id = data.aws_route53_zone.this.zone_id
-  name    = "quicklinks.max-weitz.com"
+  name    = "quicklinks.michaeljsorensen.com"
   type    = "A"
   alias {
     name                   = aws_cloudfront_distribution.this.domain_name
@@ -15,7 +15,7 @@ resource "aws_route53_record" "this" {
 }
 resource "aws_route53_record" "www" {
   zone_id = data.aws_route53_zone.this.zone_id
-  name    = "www.quicklinks.max-weitz.com"
+  name    = "www.quicklinks.michaeljsorensen.com"
   type    = "A"
   alias {
     name                   = aws_cloudfront_distribution.this.domain_name
