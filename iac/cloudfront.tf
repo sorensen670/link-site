@@ -4,7 +4,7 @@ resource "aws_cloudfront_distribution" "this" {
     origin_id                = "websiteOrigin"
     origin_access_control_id = aws_cloudfront_origin_access_control.this.id
   }
-  aliases             = ["www.quicklinks.max-weitz.com","quicklinks.max-weitz.com"]
+  aliases             = ["www.quicklinks.michaeljsorensen.com","quicklinks.michaeljsorensen.com"]
   enabled             = true
   price_class         = "PriceClass_100"
   default_root_object = "index.html"
