@@ -76,7 +76,7 @@ stages:
         steps:
           - download: current
             artifact: files
-          - task: S3Upload@1
+          - task: AmazonWebServices.aws-vsts-tools.S3Upload.S3Upload@1
             inputs:
               awsCredentials: 'AWS Tasks'
               regionName: 'us-east-1'
