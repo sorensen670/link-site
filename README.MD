@@ -16,3 +16,7 @@ Resources that will be created:
     - Will allow CloudFront Distribution to serve content over HTTPs
     - Will include subdomain of CloudFront distribution
     - Will be created in us-east-1
+
+Thank you to the original source of the code for this project: Max Weitz
+
+Original Repository: https://github.com/Maxyboy50/website
