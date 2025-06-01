@@ -56,6 +56,9 @@ stages:
           runOnce:
             deploy:
               steps:
+                - task: TerraformInstaller@1
+                  inputs:
+                    terraformVersion: '1.5.6'
                 - download: current
                   artifact: plan
                 - checkout: self
