@@ -16,6 +16,9 @@ stages:
       - job: 'Plan'
         
         steps:
+          - task: TerraformInstaller@1
+            inputs:
+              terraformVersion: '1.5.6'
           - bash: |
               terraform init
             workingDirectory: 'iac'
